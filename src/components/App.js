@@ -16,15 +16,15 @@ function App() {
     const [isConfirmationPopupOpen, setIsConfirmationPopupOpen]=React.useState(false);
 
 
-    function openProfilePopup() {
+    function handleEditProfileClick() {
         setIsEditProfilePopupOpen(true)
     }
 
-    function openAddImagePopup() {
+    function handleAddPlaceClick() {
         setIsAddPlacePopupOpen(true)
     }
 
-    function openAvatarPopup() {
+    function handleEditAvatarClick() {
         setIsEditAvatarPopupOpen(true)
     }
 
@@ -50,9 +50,9 @@ function App() {
           <Header />
 
         <Main
-            onEditProfile={openProfilePopup}
-            onAddPlace={openAddImagePopup}
-            onEditAvatar={openAvatarPopup}
+            onEditProfile={handleEditProfileClick}
+            onAddPlace={handleAddPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
             onCardClick={handleCardClick}
             onCardDeleteClick={handleCardDeleteClick}
         />
