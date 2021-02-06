@@ -4,9 +4,9 @@ import Card from "./Card.js";
 
 function Main (props) {
 
-    const [userName, setUserName]=React.useState();
-    const [userDescription, setUserDescription ]=React.useState();
-    const [userAvatar, setUserAvatar] = React.useState();
+    const [userName, setUserName]=React.useState('');
+    const [userDescription, setUserDescription ]=React.useState('');
+    const [userAvatar, setUserAvatar] = React.useState('');
     const [cards, setCards]=React.useState([]);
 
     React.useEffect(() => {
@@ -14,12 +14,13 @@ function Main (props) {
             setUserName(x.name);
             setUserDescription(x.about);
             setUserAvatar(x.avatar)
-        });
+        }).catch(e => console.log(e));
 
         Api.getInitialCards().then(c => {
                 setCards(c)
             }
-        );
+        ).catch(e => console.log(e));
+
     }, [])
 
 
@@ -42,6 +43,7 @@ function Main (props) {
             <ul className="places">
                 {cards.map(c =>
                     <Card card={c}
+                          key={c['_id']}
                           onCardClick={props.onCardClick}
                           onDelete={props.onCardDeleteClick}
                     />

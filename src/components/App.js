@@ -34,6 +34,7 @@ function App() {
         setIsEditAvatarPopupOpen(false)
         setIsImagePopupOpen(false)
         setIsConfirmationPopupOpen(false)
+        setSelectedCard(null)
     }
 
     function handleCardClick(card) {
@@ -64,8 +65,9 @@ function App() {
             onClose={closeAllPopups}
             name={'profile'}
             title={'Редактировать профиль'}
+            formType={'profile'}
             children={
-                <form className="popup__form popup__form_profile" noValidate>
+                <>
                     <div className="popup__field">
                         <input id="name-label" className="popup__input popup__input_el_name" type="text" name="profile-name"
                                placeholder="Имя" minLength="2" maxLength="40" required/>
@@ -73,12 +75,12 @@ function App() {
                     </div>
                     <div className="popup__field">
                         <input id="job-label" className="popup__input popup__input_el_job" type="text" name="profile-job"
-                               placeholder="О себе" minLength="2" maxLength="200" required/>
+                                placeholder="О себе" minLength="2" maxLength="200" required/>
                         <span id="job-label-error" className="popup__error"></span>
                     </div>
-                    <button className="popup__button-save link" type="submit">Сохранить</button>
-                </form>
+                </>
             }
+            buttonName={'Сохранить'}
         />
 
         <PopupWithForm
@@ -86,8 +88,9 @@ function App() {
             onClose={closeAllPopups}
             name={'add-card'}
             title={'Новое место'}
+            formType={'add-card'}
             children={
-                <form className="popup__form popup__form_add-card">
+                <>
                     <div className="popup__field">
                         <input id="card-name-label" className="popup__input popup__input_el_card-name" type="text" name="card-name"
                                placeholder="Название" minLength="2" maxLength="30" required/>
@@ -95,12 +98,12 @@ function App() {
                     </div>
                     <div className="popup__field">
                         <input id="card-link-label" className="popup__input popup__input_el_card-link" type="url" name="card-link"
-                               placeholder="Ссылка на картинку" required/>
+                                placeholder="Ссылка на картинку" required/>
                         <span id="card-link-label-error" className="popup__error"></span>
                     </div>
-                    <button className="popup__button-save link" type="submit">Создать</button>
-                </form>
+                </>
             }
+            buttonName={'Создать'}
         />
 
         <PopupWithForm
@@ -108,16 +111,16 @@ function App() {
             onClose={closeAllPopups}
             name={'update-avatar'}
             title={'Обновить аватар'}
+            formType={'profile'}
             children={
-                <form className="popup__form popup__form_profile" noValidate>
                     <div className="popup__field">
                         <input id="avatar-link-label" className="popup__input popup__input_el_avatar-link" type="url"
                                name="avatar-link" placeholder="Фото аватара" required/>
                         <span id="avatar-link-label-error" className="popup__error"></span>
                     </div>
-                    <button className="popup__button-save link" type="submit">Сохранить</button>
-                </form>
             }
+            buttonName={'Сохранить'}
+
         />
 
         <PopupWithForm
@@ -125,19 +128,16 @@ function App() {
             onClose={closeAllPopups}
             name={'popup_confirmation'}
             title={'Вы уверены?'}
-            children={
-                <form className="popup__form popup__form_confirmation" noValidate>
-                    <button className="popup__button-save link" type="submit" name="delete-card">Да</button>
-                </form>
-            }
+            formType={'confirmation'}
+            buttonName={'Да'}
         />
 
+        { selectedCard
+            ? <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups} />
+            : ''
+        }
 
-        <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups} />
-
-
-
-      </div>
+        </div>
       </div>
   );
 }

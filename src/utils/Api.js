@@ -11,11 +11,8 @@ class Api {
                 authorization: this._token
             }
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
     }
 
     getUserInfo() {
@@ -24,11 +21,8 @@ class Api {
                 authorization: this._token
             }
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
     }
 
     editUserInfo(name, about) {
@@ -44,11 +38,8 @@ class Api {
 
             })
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
     }
 
     addCard(name, link) {
@@ -64,11 +55,8 @@ class Api {
 
             })
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
     }
 
     deleteCard(cardId) {
@@ -81,8 +69,8 @@ class Api {
             if (res.ok) {
                 return res.json();
             }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return Promise.reject(new Error(`Ошибка: ${res.status}`));
+        });
     }
 
     likeCard(cardId) {
@@ -92,11 +80,8 @@ class Api {
                 authorization: this._token
             }
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
     }
 
     dislikeCard(cardId) {
@@ -106,11 +91,8 @@ class Api {
                 authorization: this._token
             }
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
     }
 
     updateAvatar(avatar) {
@@ -124,11 +106,15 @@ class Api {
                 avatar: avatar,
             })
         }).then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-            return new Promise.reject(`Ошибка: ${res.status}`);
-        }).catch(e => console.log(e));
+            return this._getResponseData(res);
+        });
+    }
+
+    _getResponseData(res) {
+        if (res.ok) {
+            return res.json();
+        }
+        return Promise.reject(new Error(`Ошибка: ${res.status}`));
     }
 }
 
