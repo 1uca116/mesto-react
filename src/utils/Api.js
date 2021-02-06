@@ -132,7 +132,7 @@ class Api {
     }
 }
 
-export const api = new Api (
+export default new Api (
      "https://mesto.nomoreparties.co",
      "70633b92-f713-4bf2-95db-64e42dedc0a6",
      "cohort-19"
