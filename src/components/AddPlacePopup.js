@@ -32,13 +32,15 @@ function AddPlacePopup (props) {
             children={
                 <>
                     <div className="popup__field">
-                        <input id="card-name-label" onChange={event => handleCardNameChange(event)} className="popup__input popup__input_el_card-name" type="text"
+                        <input id="card-name-label" onChange={event => handleCardNameChange(event)} value={name}
+                               className="popup__input popup__input_el_card-name" type="text"
                                name="card-name"
                                placeholder="Название" minLength="2" maxLength="30" required/>
                         <span id="card-name-label-error" className="popup__error"></span>
                     </div>
                     <div className="popup__field">
-                        <input id="card-link-label" onChange={event => handleCardLinkChange(event)} className="popup__input popup__input_el_card-link" type="url"
+                        <input id="card-link-label" onChange={event => handleCardLinkChange(event)} value={link}
+                               className="popup__input popup__input_el_card-link" type="url"
                                name="card-link"
                                placeholder="Ссылка на картинку" required/>
                         <span id="card-link-label-error" className="popup__error"></span>

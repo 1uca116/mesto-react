@@ -28,7 +28,7 @@ function Card(props) {
     return (
         <li className="card">
             <button  type="button" className={cardDeleteButtonClassName} onClick={handleDeleteClick}></button>
-            <img src={props.card.link} style={{ backgroundImage: `url(${props.card.link})` }}
+            <img src={props.card.link} alt={props.card.name}
             onClick={() => props.onCardClick(props.card)}
             className="card__image" />
             <div className="card__info">

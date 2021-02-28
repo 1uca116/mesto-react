@@ -10,6 +10,7 @@ import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import Api from '../utils/api.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
+import ConfirmationPopup from "./ConfirmationPopup";
 
 
 function App() {
@@ -77,23 +78,28 @@ function App() {
     function handleCardLike(card) {
         const isLiked = card.likes.some(i => i._id === currentUser._id);
         if (isLiked) {
-            Api.dislikeCard(card._id).then((newCard) => {
-                const newCards = cards.map((c) => c._id === card._id ? newCard : c);
-                setCards(newCards);
+            Api.dislikeCard(card._id)
+                .then((newCard) => {
+                    const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+                    setCards(newCards)
+                .catch(err => console.log(err));
             });
         } else {
-            Api.likeCard(card._id).then((newCard) => {
-                const newCards = cards.map((c) => c._id === card._id ? newCard : c);
-                setCards(newCards);
+            Api.likeCard(card._id)
+                .then((newCard) => {
+                    const newCards = cards.map((c) => c._id === card._id ? newCard : c);
+                    setCards(newCards)
+                .catch(err => console.log(err));
             });
         }
     }
 
     function handleCardDelete(card) {
-        Api.deleteCard(card._id).then( _ => {
-            const newCards = cards.filter(c => c._id !== card._id);
-            setCards(newCards);
-        });
+        Api.deleteCard(card._id)
+            .then( _ => {
+                const newCards = cards.filter(c => c._id !== card._id);
+                setCards(newCards)
+            }).catch(err => console.log(err));
     }
 
     function handleAddPlace(name, link) {
@@ -106,9 +112,8 @@ function App() {
 
     React.useEffect(() => {
         Api.getInitialCards().then(c => {
-                setCards(c)
-            }
-        ).catch(e => console.log(e));
+            setCards(c)
+        }).catch(e => console.log(e));
 
     }, [])
 
@@ -145,14 +150,8 @@ function App() {
 
                 <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
 
-                <PopupWithForm
-                isOpen={isConfirmationPopupOpen}
-                onClose={closeAllPopups}
-                name={'popup_confirmation'}
-                title={'Вы уверены?'}
-                formType={'confirmation'}
-                buttonName={'Да'}
-            />
+                <ConfirmationPopup isOpen={isConfirmationPopupOpen} onClose={closeAllPopups}  onCardDeleteClick={handleCardDelete} />
+
 
             { selectedCard
                 ? <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups} />
