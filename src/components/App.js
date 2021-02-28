@@ -89,8 +89,8 @@ function App() {
                 .then((newCard) => {
                     const newCards = cards.map((c) => c._id === card._id ? newCard : c);
                     setCards(newCards)
-                .catch(err => console.log(err));
-            });
+                }).catch(err => console.log(err));
+
         }
     }
 
