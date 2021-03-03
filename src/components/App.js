@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route, Switch, Redirect, useHistory, withRouter, Link} from 'react-router-dom';
 import '../index.css';
 import Header from './Header.js';
 import Main from './Main.js';
@@ -9,8 +10,15 @@ import EditProfilePopup from './EditProfilePopup.js';
 import EditAvatarPopup from './EditAvatarPopup.js';
 import AddPlacePopup from './AddPlacePopup.js';
 import Api from '../utils/api.js';
+import * as auth from '../utils/auth.js';
 import { CurrentUserContext } from '../contexts/CurrentUserContext.js';
 import ConfirmationPopup from "./ConfirmationPopup";
+import ProtectedRoute from './ProtectedRoute.js';
+import Register from './Register.js';
+import Login from './Login.js';
+import InfoTooltip from './InfoTooltip.js';
+import successLogo from '../images/success__logo.svg'
+import errorLogo from '../images/error__logo.svg'
 
 
 function App() {
@@ -27,6 +35,14 @@ function App() {
         avatar: ''
     });
     const [cards, setCards]=React.useState([]);
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = React.useState(false);
+    const [dataInfoTool, setDataInfoTool] = React.useState({
+        title: "",
+        icon: ""
+    });
+    const [loggedId, setLoggedId] = React.useState(false);
+
+
 
     function handleEditProfileClick() {
         setIsEditProfilePopupOpen(true)
@@ -40,6 +56,10 @@ function App() {
         setIsEditAvatarPopupOpen(true)
     }
 
+    function handleInfoTooltipClick() {
+        setIsInfoTooltipOpen(true);
+    }
+
     function closeAllPopups() {
         setIsEditProfilePopupOpen(false)
         setIsAddPlacePopupOpen(false)
@@ -47,6 +67,7 @@ function App() {
         setIsImagePopupOpen(false)
         setIsConfirmationPopupOpen(false)
         setSelectedCard(null)
+        setIsInfoTooltipOpen(false)
     }
 
     function handleCardClick(card) {
@@ -110,6 +131,76 @@ function App() {
             }).catch(err => console.log(err));
     }
 
+    function handleRegister(email, password) {
+        const history = useHistory();
+        auth.register(email, password)
+            .then((data) => {
+                console.log(data);
+                setDataInfoTool({ title: "Вы успешно зарегистрировались!", icon: successLogo });
+                handleInfoTooltipClick();
+            })
+            .catch((error) => {
+                console.error(error);
+                setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: errorLogo });
+                handleInfoTooltipClick();
+            })
+            history.push("/sign-in");
+
+    }
+
+    function handleLogin(email, password) {
+        const history = useHistory();
+        console.log(email, password);
+        auth.login(email, password)
+            .then((data) => {
+                auth.checkToken()
+                    .then((res) => {
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: errorLogo });
+                        handleInfoTooltipClick();
+                    })
+                history.push("/");
+                setLoggedId(true);
+            })
+            .catch((error) => {
+                console.error(error);
+                setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: errorLogo });
+                handleInfoTooltipClick();
+            })
+    }
+
+    function handleCheckToken() {
+        const token = localStorage.getItem("token");
+        const history = useHistory();
+        if (token) {
+            auth.checkToken(token)
+                .then((res) => {
+                    if (res) {
+                        history.push("/");
+                    } else {
+                        setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: errorLogo });
+                        handleInfoTooltipClick();
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+        }
+    }
+
+    function signOut() {
+        setLoggedId(false);
+        setUserData("");
+        localStorage.removeItem("token");
+        history.push("/sign-in");
+    }
+
+    React.useEffect(() => {
+        handleCheckToken();
+    }, []);
+
     React.useEffect(() => {
         Api.getInitialCards().then(c => {
             setCards(c)
@@ -130,17 +221,37 @@ function App() {
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
             <div className="page__container">
-              <Header />
+              <Header
+                  signOut={signOut}
+              />
 
-            <Main
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                onCardDeleteClick={handleCardDelete}
-                cards={cards}
-                onCardLike={handleCardLike}
-            />
+              <Switch>
+                  <ProtectedRoute
+                    exact path="/"
+                    component={Main}
+                    onEditProfile={handleEditProfileClick}
+                    onAddPlace={handleAddPlaceClick}
+                    onEditAvatar={handleEditAvatarClick}
+                    onCardClick={handleCardClick}
+                    onCardDeleteClick={handleCardDelete}
+                    cards={cards}
+                    onCardLike={handleCardLike}
+                    loggedId={loggedId}
+
+                  />
+
+                <Route path="/sign-up">
+                    <Register handleRegister={handleRegister} />
+                </Route>
+
+                    <Route path="/sign-in">
+                        <Login handleLogin={handleLogin} />
+                    </Route>
+
+                    <Route exact path="/">
+                        {loggedId ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+                    </Route>
+              </Switch>
 
             <Footer />
 
@@ -151,6 +262,8 @@ function App() {
                 <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
 
                 <ConfirmationPopup isOpen={isConfirmationPopupOpen} onClose={closeAllPopups}  onCardDeleteClick={handleCardDelete} />
+
+                <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} title={dataInfoTool.title} icon={dataInfoTool.icon}/>
 
 
             { selectedCard

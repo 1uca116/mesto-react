@@ -8,6 +8,6 @@
   .header__logo{
       width: 103px;
       height: 25px;
-      background-size: contain;
+      padding-left: 30px;
   }
 }
