@@ -29,8 +29,8 @@ function Card(props) {
         <li className="card">
             <button  type="button" className={cardDeleteButtonClassName} onClick={handleDeleteClick}></button>
             <img src={props.card.link} alt={props.card.name}
-            onClick={() => props.onCardClick(props.card)}
-            className="card__image" />
+                 onClick={() => props.onCardClick(props.card)}
+                 className="card__image" />
             <div className="card__info">
                 <h2 className="card__name">{props.card.name}</h2>
                 <div className="card__like">

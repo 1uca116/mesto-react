@@ -40,7 +40,10 @@ function App() {
         title: "",
         icon: ""
     });
-    const [loggedId, setLoggedId] = React.useState(false);
+
+    const [loggedIn, setLoggedIn] = React.useState(false)
+    const [email, setEmail] = React.useState("");
+    const history = useHistory();
 
 
 
@@ -103,8 +106,8 @@ function App() {
                 .then((newCard) => {
                     const newCards = cards.map((c) => c._id === card._id ? newCard : c);
                     setCards(newCards)
-                .catch(err => console.log(err));
-            });
+                        .catch(err => console.log(err));
+                });
         } else {
             Api.likeCard(card._id)
                 .then((newCard) => {
@@ -132,7 +135,6 @@ function App() {
     }
 
     function handleRegister(email, password) {
-        const history = useHistory();
         auth.register(email, password)
             .then((data) => {
                 console.log(data);
@@ -144,25 +146,23 @@ function App() {
                 setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: errorLogo });
                 handleInfoTooltipClick();
             })
-            history.push("/sign-in");
+        history.push("/sign-in");
 
     }
 
     function handleLogin(email, password) {
-        const history = useHistory();
         console.log(email, password);
-        auth.login(email, password)
+        auth.authorize(email, password)
             .then((data) => {
                 auth.checkToken()
-                    .then((res) => {
-                    })
+                    .then(_ => {})
                     .catch((error) => {
                         console.error(error);
                         setDataInfoTool({ title: "Что-то пошло не так! Попробуйте ещё раз.", icon: errorLogo });
                         handleInfoTooltipClick();
                     })
                 history.push("/");
-                setLoggedId(true);
+                setLoggedIn(true);
             })
             .catch((error) => {
                 console.error(error);
@@ -173,7 +173,6 @@ function App() {
 
     function handleCheckToken() {
         const token = localStorage.getItem("token");
-        const history = useHistory();
         if (token) {
             auth.checkToken(token)
                 .then((res) => {
@@ -191,8 +190,8 @@ function App() {
     }
 
     function signOut() {
-        setLoggedId(false);
-        setUserData("");
+        setLoggedIn(false);
+        //setUserData("");
         localStorage.removeItem("token");
         history.push("/sign-in");
     }
@@ -220,61 +219,62 @@ function App() {
     return (
         <CurrentUserContext.Provider value={currentUser}>
             <div className="page">
-            <div className="page__container">
-              <Header
-                  signOut={signOut}
-              />
+                <div className="page__container">
+                    <Header
+                        email={email}
+                        signOut={signOut}
+                    />
 
-              <Switch>
-                  <ProtectedRoute
-                    exact path="/"
-                    component={Main}
-                    onEditProfile={handleEditProfileClick}
-                    onAddPlace={handleAddPlaceClick}
-                    onEditAvatar={handleEditAvatarClick}
-                    onCardClick={handleCardClick}
-                    onCardDeleteClick={handleCardDelete}
-                    cards={cards}
-                    onCardLike={handleCardLike}
-                    loggedId={loggedId}
+                    <Switch>
+                        <ProtectedRoute
+                            exact path="/"
+                            component={Main}
+                            onEditProfile={handleEditProfileClick}
+                            onAddPlace={handleAddPlaceClick}
+                            onEditAvatar={handleEditAvatarClick}
+                            onCardClick={handleCardClick}
+                            onCardDeleteClick={handleCardDelete}
+                            cards={cards}
+                            onCardLike={handleCardLike}
+                            loggedIn={loggedIn}
 
-                  />
+                        />
 
-                <Route path="/sign-up">
-                    <Register handleRegister={handleRegister} />
-                </Route>
+                        <Route path="/sign-up">
+                            <Register handleRegister={handleRegister} />
+                        </Route>
 
-                    <Route path="/sign-in">
-                        <Login handleLogin={handleLogin} />
-                    </Route>
+                        <Route path="/sign-in">
+                            <Login handleLogin={handleLogin} />
+                        </Route>
 
-                    <Route exact path="/">
-                        {loggedId ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-                    </Route>
-              </Switch>
+                        <Route exact path="/">
+                            {loggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+                        </Route>
+                    </Switch>
 
-            <Footer />
+                    <Footer />
 
-                <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>
+                    <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser}/>
 
-                <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace}/>
+                    <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace}/>
 
-                <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
+                    <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar}/>
 
-                <ConfirmationPopup isOpen={isConfirmationPopupOpen} onClose={closeAllPopups}  onCardDeleteClick={handleCardDelete} />
+                    <ConfirmationPopup isOpen={isConfirmationPopupOpen} onClose={closeAllPopups}  onCardDeleteClick={handleCardDelete} />
 
-                <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} title={dataInfoTool.title} icon={dataInfoTool.icon}/>
+                    <InfoTooltip isOpen={isInfoTooltipOpen} onClose={closeAllPopups} title={dataInfoTool.title} icon={dataInfoTool.icon}/>
 
 
-            { selectedCard
-                ? <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups} />
-                : ''
-            }
+                    { selectedCard
+                        ? <ImagePopup card={selectedCard} isOpen={isImagePopupOpen} onClose={closeAllPopups} />
+                        : ''
+                    }
 
+                </div>
             </div>
-          </div>
-      </CurrentUserContext.Provider>
-  );
+        </CurrentUserContext.Provider>
+    );
 }
 
 export default App;

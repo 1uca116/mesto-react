@@ -15,7 +15,7 @@ function Header (props) {
                 <Route exact path="/">
                     <div className={`header__button-nav ${isMenuClick ? "header__button-nav_close" : ""}`} onClick={handleMenuClick}></div>
                     <div className={`header__info ${isMenuClick ? "header__info_box-nav" : ""}`}>
-                        <p className="header__user-email">{userEmail}</p>
+                        <p className="header__user-email">{props.userEmail}</p>
                         <Link to="/sign-in" className="header__out" onClick={() => {
                             props.signOut();
                             handleMenuClick();

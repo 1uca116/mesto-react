@@ -9,7 +9,8 @@
 @import url('./blocks/header/__info/_box-nav/header__info_box-nav.css');
 @import url('./blocks/header/__logo/header__logo.css');
 @import url('./blocks/header/__logo/_box-nav/header__logo_box-nav.css');
-@import url('blocks/header/__nav/_content/header__nav_content.css');
+@import url('./blocks/header/__nav/header__nav.css');
+@import url('./blocks/header/__nav/_content/header__nav_content.css');
 @import url('./blocks/header/__sign/header__sign.css');
 @import url('./blocks/header/__out/header__out.css');
 @import url('./blocks/header/__user-email/header__user-email.css');
@@ -20,6 +21,7 @@
 @import url('./blocks/sign/__button/sign__button.css');
 @import url('./blocks/sign/__form/sign__form.css');
 @import url('./blocks/sign/__input/sign__input.css');
+@import url('./blocks/sign/__link/sign__link.css');
 @import url('./blocks/profile/profile.css');
 @import url('./blocks/profile/__about/profile__about.css');
 @import url('./blocks/profile/__info/profile__info.css');
