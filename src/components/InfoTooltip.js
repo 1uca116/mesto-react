@@ -6,7 +6,7 @@ function InfoTooltip(props) {
             <div className="popup__container">
                 <button onClick={props.onClose} className="popup__button-close link" type="button"></button>
                 <img className="popup__tool-logo" src={props.icon} alt="Лого статус" />
-                <h3 className="popup__title popup__title_small">{props.title}</h3>
+                <h3 className="popup__title popup__title_info">{props.title}</h3>
             </div>
         </div>
     );
